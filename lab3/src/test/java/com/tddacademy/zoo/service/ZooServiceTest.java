@@ -155,12 +155,10 @@ class ZooServiceTest {
         // 3. Verify that zooRepository.deleteById(1L) was called once
         
         // Your code here:
-        // Long zooId = 1L;
-        // when(zooRepository.existsById(zooId)).thenReturn(true);
-        //
-        // zooService.deleteZoo(zooId);
-        //
-        // verify(zooRepository, times(1)).deleteById(zooId);
+         Long zooId = 1L;
+         when(zooRepository.existsById(zooId)).thenReturn(true);
+         zooService.deleteZoo(zooId);
+         verify(zooRepository, times(1)).deleteById(zooId);
     }
 
     @Test
@@ -172,14 +170,13 @@ class ZooServiceTest {
         // 3. Verify the exception message contains "Zoo not found with id: 999"
         
         // Your code here:
-        // Long zooId = 999L;
-        // when(zooRepository.existsById(zooId)).thenReturn(false);
-        //
-        // IllegalArgumentException exception = assertThrows(
-        //     IllegalArgumentException.class,
-        //     () -> zooService.deleteZoo(zooId)
-        // );
-        // assertTrue(exception.getMessage().contains("Zoo not found with id: 999"));
+         Long zooId = 999L;
+         when(zooRepository.existsById(zooId)).thenReturn(false);
+         IllegalArgumentException exception = assertThrows(
+             IllegalArgumentException.class,
+             () -> zooService.deleteZoo(zooId)
+         );
+         assertTrue(exception.getMessage().contains("Zoo not found with id: 999"));
     }
 
     @Test
