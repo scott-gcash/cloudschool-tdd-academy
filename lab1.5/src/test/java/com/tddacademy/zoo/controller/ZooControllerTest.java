@@ -55,7 +55,6 @@ class ZooControllerTest {
              .andExpect(jsonPath("$.name").value("Manila Zoo"))
              .andExpect(jsonPath("$.location").value("Manila, Philippines"))
              .andExpect(jsonPath("$.description").value("A beautiful zoo in the heart of Manila"));
-
     }
 
     @Test
@@ -66,10 +65,7 @@ class ZooControllerTest {
         // 2. Add expectation for status().isNotFound()
         
         // Your code here:
-        // mockMvc.perform(get("/api/zoos/999"))
-        //     .andExpect(...);
-
-
-
+        mockMvc.perform(get("/api/zoos/999"))
+                .andExpect(status().isNotFound());
     }
 } 
