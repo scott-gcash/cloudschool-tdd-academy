@@ -6,6 +6,8 @@ import com.tddacademy.zoo.service.ZooService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -25,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @WebMvcTest(ZooController.class)
 class ZooControllerTest {
 
+    private static final Logger log = LoggerFactory.getLogger(ZooControllerTest.class);
     @Autowired
     private MockMvc mockMvc;
 
@@ -90,11 +93,15 @@ class ZooControllerTest {
         //    - jsonPath("$.description").value("A beautiful zoo in the heart of Manila")
         
         // Your code here:
-        // when(zooService.getZooById(1L)).thenReturn(createdZoo);
-        // mockMvc.perform(get("/api/zoos/1"))
-        //     .andExpect(...)
-        //     .andExpect(...)
-        //     .andExpect(...);
+         when(zooService.getZooById(1L)).thenReturn(createdZoo);
+         mockMvc.perform(get("/api/zoos/1"))
+             .andExpect(status().isOk())
+             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+             .andExpect(jsonPath("$.id").value(1))
+             .andExpect(jsonPath("$.name").value("Manila Zoo"))
+             .andExpect(jsonPath("$.location").value("Manila, Philippines"))
+             .andExpect(jsonPath("$.description").value("A beautiful zoo in the heart of Manila"));
+
     }
 
     @Test
@@ -142,14 +149,17 @@ class ZooControllerTest {
         //    - jsonPath("$.description").value("Updated description")
         
         // Your code here:
-        // Zoo updatedZoo = new Zoo(1L, "Updated Zoo Name", "Updated Location", "Updated description", new ArrayList<>(), new ArrayList<>());
-        // when(zooService.updateZoo(eq(1L), any(Zoo.class))).thenReturn(updatedZoo);
-        // mockMvc.perform(put("/api/zoos/1")
-        //         .contentType(MediaType.APPLICATION_JSON)
-        //         .content(objectMapper.writeValueAsString(testZoo)))
-        //     .andExpect(...)
-        //     .andExpect(...)
-        //     .andExpect(...);
+         Zoo updatedZoo = new Zoo(1L, "Updated Zoo Name", "Updated Location", "Updated description", new ArrayList<>(), new ArrayList<>());
+         when(zooService.updateZoo(eq(1L), any(Zoo.class))).thenReturn(updatedZoo);
+         mockMvc.perform(put("/api/zoos/1")
+                 .contentType(MediaType.APPLICATION_JSON)
+                 .content(objectMapper.writeValueAsString(testZoo)))
+             .andExpect(status().isOk())
+             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+             .andExpect(jsonPath("$.id").value(1))
+             .andExpect(jsonPath("$.name").value("Updated Zoo Name"))
+             .andExpect(jsonPath("$.location").value("Updated Location"))
+             .andExpect(jsonPath("$.description").value("Updated description"));
     }
 
     @Test
@@ -161,11 +171,11 @@ class ZooControllerTest {
         // 3. Add expectation for status().isNotFound()
         
         // Your code here:
-        // when(zooService.updateZoo(eq(999L), any(Zoo.class))).thenThrow(new IllegalArgumentException("Zoo not found with id: 999"));
-        // mockMvc.perform(put("/api/zoos/999")
-        //         .contentType(MediaType.APPLICATION_JSON)
-        //         .content(objectMapper.writeValueAsString(testZoo)))
-        //     .andExpect(...);
+         when(zooService.updateZoo(eq(999L), any(Zoo.class))).thenThrow(new IllegalArgumentException("Zoo not found with id: 999"));
+         mockMvc.perform(put("/api/zoos/999")
+                 .contentType(MediaType.APPLICATION_JSON)
+                 .content(objectMapper.writeValueAsString(testZoo)))
+             .andExpect(status().isNotFound());
     }
 
     @Test
